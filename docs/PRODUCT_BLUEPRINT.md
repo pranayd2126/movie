@@ -220,6 +220,6 @@ For each code slice: write a small coherent change, run relevant tests, inspect 
 
 ## 11. Owner inputs and next action
 
-Owner decisions: create a public repository under `pranayd2126`; proposed name `movie-discovery`. Use free development options first, with no paid data commitments. GitHub sign-in/authorized access is still needed. Commercial vendor selection remains deferred until rights, pricing and coverage are established. Put keys in the ignored `.env`, not chat. No keys are necessary to implement slice 1.
+Owner decisions: create a public repository under `pranayd2126`; repository `movie`. Use free development options first, with no paid data commitments. The owner created `https://github.com/pranayd2126/movie.git`; use the configured terminal Git authentication to push reviewed source. Commercial vendor selection remains deferred until rights, pricing and coverage are established. Put keys in the ignored `.env`, not chat. No keys are necessary to implement slice 1.
 
 The foundation is now concrete enough to begin the first vertical slice. No full implementation has been started in this delivery, honoring the request to establish the blueprint first. Remaining data access decisions can proceed alongside fixture development; commercial purchase and public launch require their own concrete, reviewable decisions.

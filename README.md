@@ -19,9 +19,9 @@ Later implementation must validate configuration at startup: fixture mode works 
 
 ## Version control and GitHub
 
-The owner requested a public GitHub repository under `pranayd2126`. Proposed repository name: `movie-discovery`. Publish only reviewed source and documentation. Ignore `.env`, database exports, private data and raw vendor responses. Git history protects source changes; it is not a database backup or a secret store. Production secrets belong in the deployment secret manager. Database backups require a separate retention and restore process.
+The owner requested a public GitHub repository under `pranayd2126`. Repository: [`pranayd2126/movie`](https://github.com/pranayd2126/movie). Publish only reviewed source and documentation. Ignore `.env`, database exports, private data and raw vendor responses. Git history protects source changes; it is not a database backup or a secret store. Production secrets belong in the deployment secret manager. Database backups require a separate retention and restore process.
 
-The GitHub destination and authorized connection must be established before a remote can be created or pushed. Do not interpret a local Git commit as a successful GitHub backup.
+The configured GitHub remote is `https://github.com/pranayd2126/movie.git`. Push reviewed commits to `origin/main` and verify the remote commit after pushing. A local Git commit alone is not a successful GitHub backup.
 
 ## First implementation slice
 
