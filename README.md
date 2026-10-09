@@ -1,28 +1,71 @@
-# India-first movie and series discovery
+# NextScene
 
-Status: researched product/technical foundation, 5 October 2026. No application, live API integration, database migration, or public deployment has been implemented yet.
+An India-first movie and TV discovery application built with Next.js and TypeScript. The normal application uses real TMDB metadata and artwork, plus India (`IN`) watch-provider listings powered by JustWatch through TMDB. No fictional catalog fallback is enabled.
 
-The product helps people choose what to watch across their Indian streaming subscriptions, using explainable recommendations and deliberate social sharing. Browsing does not require an account. Watched history is private by default, even when the user's profile is public.
+## Run locally
 
-## Start here
+Requires Node 20.19+.
 
-1. [Product and technical blueprint](docs/PRODUCT_BLUEPRINT.md): scope, journeys, stack, recommendation model, design system and delivery plan.
-2. [Data and API strategy](docs/DATA_STRATEGY.md): researched options, evidence, restrictions and live-data acceptance gates.
-3. [Database design](docs/DATABASE_DESIGN.md): logical schema, constraints, indexes and access boundaries; this is not an executed migration.
-4. [Privacy contract](docs/PRIVACY.md): exact visibility behavior and required security tests.
+```bash
+npm install
+# Copy .env.example to .env.local only if .env.local does not already exist.
+# Add TMDB_READ_ACCESS_TOKEN locally; never paste secrets into chat or source files.
+npm run dev
+```
 
-## Local configuration
+Open http://localhost:5000. `.env`, `.env.local` and other filled env files are ignored; `.env.example` contains placeholders only. All provider credentials stay on the server. `TMDB_ACCESS_TOKEN` is also accepted as an alias; `TMDB_API_KEY` is an optional alternative.
 
-An ignored `.env` is prepared with empty credential fields and fixture mode selected. `.env.example` documents the same configuration without secrets. Leave credentials blank until their implementation phase; never enter Netflix, Prime, or other OTT passwords. The backend will call data vendors using server-side credentials.
+TMDB registration: https://www.themoviedb.org/settings/api. Free access is for non-commercial use with attribution; commercial licensing is separate. India availability may be incomplete/stale and does not establish season, plan or dubbing entitlement. Watch-option links use TMDB's supplied destination, not invented provider playback links.
 
-Later implementation must validate configuration at startup: fixture mode works without credentials, live mode fails clearly if required credentials are absent, and production rejects fixture mode. An environment variable must never disable privacy enforcement.
+## Working features
 
-## Version control and GitHub
+- Anonymous Home, Discover, For You and movie/TV detail pages backed by the replaceable catalog adapter.
+- Live search, paginated candidate retrieval, India service selection, original-language/genre/mood/runtime/rating/year filters, and explicit rating/newest/A–Z sorting within retrieved results.
+- Real posters/backdrops, cast and crew, trailer references, and separately labelled subscription/rent/buy/channel/free offers.
+- Shared content-based ranking with configurable weights, negative signals, diversity and evidence-based explanations. TMDB recommendations supply candidates; our service ranks them.
+- Persistent anonymous watchlist, likes, dislikes, favorites, ratings, Not Interested and private watched history. Saved metadata is fetched independently of discovery pagination.
+- Privacy controls, local export/reset, neutral watched behavior, and explicit title-link sharing containing no private activity.
 
-The owner requested a public GitHub repository under `pranayd2126`. Repository: [`pranayd2126/movie`](https://github.com/pranayd2126/movie). Publish only reviewed source and documentation. Ignore `.env`, database exports, private data and raw vendor responses. Git history protects source changes; it is not a database backup or a secret store. Production secrets belong in the deployment secret manager. Database backups require a separate retention and restore process.
+## Architecture
 
-The configured GitHub remote is `https://github.com/pranayd2126/movie.git`. Push reviewed commits to `origin/main` and verify the remote commit after pushing. A local Git commit alone is not a successful GitHub backup.
+- `src/modules/catalog/types.ts`: provider-independent catalog contract and canonical `tmdb:movie:<id>` / `tmdb:tv:<id>` identities.
+- `src/adapters/tmdb/`: server-only API implementation; caching, request deduplication, bounded concurrency and sanitized errors.
+- `src/server/catalog.ts`: adapter selection. Routes depend on the catalog contract.
+- `src/modules/recommendations/rank.ts`: shared scoring, exclusions, diversity, surface strategy and explanations.
+- `src/modules/library/state.ts`: validated private local state. Legacy fictional IDs cannot become real interactions.
+- `src/components/use-title-metadata.ts`: independent metadata retrieval for saved/evidence records.
 
-## First implementation slice
+Original-language preferences do not imply a streaming provider has that audio track. Mood tags are genre-based heuristics. Recommendations are a content-based first version, not a trained collaborative model or a demonstrated quality benchmark. Personalized candidate retrieval is bounded to 60 records per page (36 for ordinary catalog search); user sorts apply to loaded results rather than the whole TMDB database.
 
-Implement anonymous discovery → filter/search → title detail using labelled development fixtures and replaceable adapters. Prove provider preference persistence and meaningful recommendation explanations. Then add authenticated private history and database authorization tests before social publishing. See the blueprint for gates and later slices.
+## Database and accounts
+
+MongoDB was selected by the owner in place of the earlier PostgreSQL proposal. `MONGODB_URI` is server-only and configured locally. A read-only connection check is available:
+
+```bash
+node scripts/check-connections.mjs
+```
+
+Email/password signup and login, opaque HttpOnly sessions, and private MongoDB profiles are working. Passwords use salted scrypt; sessions store hashed tokens. Account state never goes into anonymous local storage. Writes use session ownership and revision checks; anonymous import is opt-in. MongoDB and TMDB connection checks pass. Watch history stays private and does not teach enjoyment. Email verification, password recovery and social publishing are not enabled.
+
+The shared recommendation engine builds long-term, recent and session profiles, retrieves multiple real TMDB candidate pools, reranks with diversity, and composes personalized rows. See [the recommendation report](docs/RECOMMENDATION_REPORT.md) for the model, limits and test evidence. Development-only diagnostics are at `/debug/recommendations`.
+
+
+## Verification
+
+```bash
+npm test
+npm run typecheck
+npm run build
+# With a dev server running and working TMDB credentials:
+npx tsx scripts/verify-live.mts
+# Creates disposable reserved-domain test accounts in the configured database:
+npx tsx scripts/verify-accounts.mts
+```
+
+Unit tests cover private watched history, legacy/untrusted state, offer eligibility, negative/positive signal strength, explicit search/sort behavior, and shared deterministic ranking. Live verification covers three India preference personas, movie/TV metadata, provider IDs, search, missing results and invalid IDs.
+
+For production-mode local testing: `npm run build && npm start` (also localhost:5000; stop the dev process first).
+
+GitHub and deployment remain deferred. The app is a local preview; do not deploy until account authorization, abuse controls and commercial/data terms are reviewed for the actual launch scope.
+
+Taste supports right-swipe Like, left-swipe Not Interested, animated button/keyboard choices, Undo, and card-to-detail navigation. See [the focused Taste polish report](docs/TASTE_FEATURE_REPORT.md) for implementation details, evidence and verification limits. Run only its focused checks with `npx tsx --conditions=react-server --test tests/swipe.test.ts`.

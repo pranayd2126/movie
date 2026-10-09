@@ -1,0 +1,20 @@
+{
+  "initialRows": 8,
+  "firstAppendRows": 12,
+  "secondAppendRows": 16,
+  "firstPrefixStable": true,
+  "secondPrefixStable": true,
+  "uniqueTitles": 92,
+  "totalTitles": 92,
+  "returnFromTasteStable": true,
+  "afterNewTasteRows": 20,
+  "newAnchor": "Because you liked Devil May Cry",
+  "moodResetRows": 5,
+  "mobileViewport": 390,
+  "mobileHorizontalRows": true,
+  "mobilePageHorizontalScrollAfterFix": 0,
+  "all92PostersLazy": true,
+  "finalFilteredRows": 24,
+  "endMessage": "You\u2019ve reached the end of this set of picks.",
+  "finalBrowserErrors": 0
+}

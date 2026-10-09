@@ -1,0 +1,3 @@
+// Names match the existing TMDB movie/TV genre vocabulary; no separate ID space.
+export const catalogGenres=['Action','Adventure','Animation','Comedy','Crime','Documentary','Drama','Family','Fantasy','History','Horror','Music','Mystery','Romance','Science Fiction','Thriller','War','Western','Action & Adventure','Sci-Fi & Fantasy','Kids','Reality','News','Soap','Talk','War & Politics','TV Movie'];
+export const genreMatches=(genres:string[],selected:string)=>genres.includes(selected)||selected==='Action'&&genres.includes('Action & Adventure')||selected==='Adventure'&&genres.includes('Action & Adventure')||['Science Fiction','Fantasy'].includes(selected)&&genres.includes('Sci-Fi & Fantasy');

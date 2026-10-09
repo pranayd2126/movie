@@ -1,0 +1,80 @@
+{
+  "passed": true,
+  "completedAndSkippedPersist": true,
+  "accountBEmptyPrivateLibrary": true,
+  "forgedAccountAIgnored": true,
+  "normalResponseHasNoDiagnostics": true,
+  "swipeCandidates": 36,
+  "explicitMatches": [
+    {
+      "name": "Scary Movie",
+      "runtime": 96,
+      "language": "English"
+    },
+    {
+      "name": "The Love Hypothesis",
+      "runtime": 112,
+      "language": "English"
+    },
+    {
+      "name": "Memoir of a Snail",
+      "runtime": 94,
+      "language": "English"
+    },
+    {
+      "name": "The Sheep Detectives",
+      "runtime": 109,
+      "language": "English"
+    },
+    {
+      "name": "Captain Fantastic",
+      "runtime": 119,
+      "language": "English"
+    },
+    {
+      "name": "Red, White & Royal Blue",
+      "runtime": 118,
+      "language": "English"
+    },
+    {
+      "name": "Rizzoli & Isles",
+      "runtime": 43,
+      "language": "English"
+    },
+    {
+      "name": "Livestream from Hell",
+      "runtime": 77,
+      "language": "English"
+    },
+    {
+      "name": "Gilmore Girls",
+      "runtime": 44,
+      "language": "English"
+    },
+    {
+      "name": "Lock, Stock and Two Smoking Barrels",
+      "runtime": 105,
+      "language": "English"
+    },
+    {
+      "name": "Shrek",
+      "runtime": 90,
+      "language": "English"
+    },
+    {
+      "name": "The Hangover",
+      "runtime": 100,
+      "language": "English"
+    },
+    {
+      "name": "Dirty Rotten Scoundrels",
+      "runtime": 110,
+      "language": "English"
+    },
+    {
+      "name": "Shrek the Third",
+      "runtime": 93,
+      "language": "English"
+    }
+  ]
+}

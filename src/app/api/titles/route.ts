@@ -1,0 +1,3 @@
+import { getCatalogSource } from '@/server/catalog';
+import { parseTitleRef } from '@/modules/catalog/types';
+export async function POST(request:Request){try{const {ids}=await request.json();if(!Array.isArray(ids)||ids.length>60||ids.some(id=>typeof id!=='string'||!parseTitleRef(id)))return Response.json({error:'Invalid title references.'},{status:400});const results=await Promise.allSettled([...new Set<string>(ids)].map(id => getCatalogSource().get(id)));return Response.json({titles:results.flatMap(r=>r.status==='fulfilled'&&r.value?[r.value]:[]),failed:results.filter(r=>r.status==='rejected').length},{headers:{'Cache-Control':'private, no-store'}});}catch{return Response.json({error:'Saved titles could not be loaded.'},{status:503});}}

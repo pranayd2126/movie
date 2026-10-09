@@ -1,0 +1,51 @@
+import assert from 'node:assert/strict';
+import {readFile,writeFile} from 'node:fs/promises';
+import {randomBytes} from 'node:crypto';
+import {defaultState} from '../src/modules/library/state';
+import {defaultFilters,getRecommendations} from '../src/modules/recommendations/rank';
+import {recordChanges,createEvent} from '../src/modules/library/events';
+import {applySwipe} from '../src/modules/recommendations/swipe';
+const origin='http://localhost:5000';
+const fixture=JSON.parse(await readFile('/tmp/nextscene-discovery-fixture.json','utf8'));
+let cookie='';
+async function api(path:string,body?:unknown){const r=await fetch(origin+path,{method:body?'POST':'GET',headers:{Origin:origin,'Content-Type':'application/json',Cookie:cookie},...(body?{body:JSON.stringify(body)}:{}),signal:AbortSignal.timeout(90000)});const set=r.headers.get('set-cookie');if(set)cookie=set.split(';')[0];const d=await r.json();assert.equal(r.status,200,`${path}: ${r.status} ${d.error??''}`);return d;}
+async function save(account:any,state:any){const r=await fetch(origin+'/api/profile',{method:'PUT',headers:{Origin:origin,'Content-Type':'application/json',Cookie:cookie},body:JSON.stringify({owner:account.user.id,revision:account.revision,state}),signal:AbortSignal.timeout(20000)});const d=await r.json();assert.equal(r.status,200,d.error);return {...account,...d};}
+let a=await api('/api/auth',{action:'login',email:fixture.email,password:fixture.password});
+assert.equal(a.state.onboarding,'completed');assert.deepEqual([...a.state.languages].sort(),['ml','te']);assert.ok(a.state.genres.includes('Comedy')&&a.state.genres.includes('Thriller'));assert.ok(a.state.services.length>=2);
+console.log('PASS persisted browser onboarding and completed-state login');
+// Reset only this reserved test account's behavioral state for a repeatable demonstration.
+assert.ok(fixture.email.startsWith('nextscene-discovery-a-')&&fixture.email.endsWith('@example.invalid'));
+a=await save(a,{...structuredClone(defaultState),languages:a.state.languages,genres:a.state.genres,services:a.state.services,onboarding:'completed'});
+const baseline=structuredClone(a.state);
+const request={surface:'discover',sessionId:'discovery-phase',filters:defaultFilters,debug:true};
+const initial=await api('/api/recommendations',request);assert.ok(initial.ranked.length>3);
+const liked=initial.ranked.find((r:any)=>r.title.language==='Telugu')?.title??initial.ranked[0].title;
+const rated=initial.ranked.find((r:any)=>r.title.id!==liked.id&&r.title.language==='Malayalam')?.title??initial.ranked[1].title;
+const swiped=initial.ranked.find((r:any)=>![liked.id,rated.id].includes(r.title.id))!.title;
+const hidden=initial.ranked.find((r:any)=>![liked.id,rated.id,swiped.id].includes(r.title.id))!.title;
+let state=recordChanges(a.state,{...a.state,liked:[...a.state.liked,liked.id],ratings:{...a.state.ratings,[rated.id]:9}},{surface:'discover',sessionId:request.sessionId,row:'top'});
+state=recordChanges(state,applySwipe(state,swiped.id,'like').state,{surface:'swipe',sessionId:request.sessionId,input:'gesture'});
+state=recordChanges(state,applySwipe(state,hidden.id,'not_interested').state,{surface:'swipe',sessionId:request.sessionId,input:'gesture'});
+a=await save(a,state);
+const after=await api('/api/recommendations',request);assert.ok(after.debug.taste.evidenceCount>=3);assert.equal(after.debug.taste.negative.length,0);assert.ok(after.ranked.every((r:any)=>r.title.id!==hidden.id));
+assert.ok(after.debug.rows.some((r:any)=>r.id===`seed:${liked.id}`));assert.ok(after.debug.rows.some((r:any)=>r.id===`seed:${rated.id}`&&r.name.includes('rated')));
+const surfaces:Record<string,unknown>={discover:after.rows.map((r:any)=>r.name)};
+for(const surface of ['home','for-you']){const result=await api('/api/recommendations',{...request,surface});assert.ok(result.ranked.length);surfaces[surface]=result.rows.map((r:any)=>r.name);}
+const samePoolBefore=getRecommendations({titles:after.titles,state:baseline,evidence:after.evidence,surface:'discover'});
+const strengthened=after.ranked.filter((r:any)=>r.components.taste>0&&r.score>(samePoolBefore.find(b=>b.title.id===r.title.id)?.score??Infinity));assert.ok(strengthened.length);
+const beforeLong=after.debug.taste.longTerm;
+state={...a.state,events:[...a.state.events,createEvent('mood',{surface:'discover',sessionId:request.sessionId,mood:'Funny'})]};a=await save(a,state);
+const mood=await api('/api/recommendations',{...request,filters:{...defaultFilters,mood:'Funny'}});assert.deepEqual(mood.debug.taste.longTerm,beforeLong);assert.ok(mood.ranked.length);assert.ok(mood.ranked.every((r:any)=>r.components.mood>0));
+const constrained=await api('/api/recommendations',{...request,filters:{...defaultFilters,mood:'Funny',language:'Telugu',provider:a.state.services[0],maxRuntime:120}});
+assert.ok(constrained.ranked.every((r:any)=>r.title.language==='Telugu'&&r.title.runtime>0&&r.title.runtime<120&&r.title.offers.some((o:any)=>o.provider===a.state.services[0]&&o.type==='subscription'&&o.region==='IN')));
+console.log('PASS dynamic Like, rating, swipe, mood and hard-filter demonstration');
+await api('/api/auth',{action:'logout'});
+const bEmail=`nextscene-discovery-b-${randomBytes(6).toString('hex')}@example.invalid`;
+let b=await api('/api/auth',{action:'signup',email:bEmail,password:fixture.password,name:'Discovery B'});assert.equal(b.state.onboarding,'pending');assert.deepEqual(b.state.languages,[]);assert.deepEqual(b.state.liked,[]);assert.equal(b.state.events.length,0);
+b=await save(b,{...b.state,onboarding:'skipped',languages:['en'],genres:['Science Fiction'],services:['8']});await api('/api/auth',{action:'logout'});
+b=await api('/api/auth',{action:'login',email:bEmail,password:fixture.password});assert.equal(b.state.onboarding,'skipped');assert.deepEqual(b.state.languages,['en']);
+const bRows=await api('/api/recommendations',{...request,state:a.state});assert.equal(bRows.owner,b.user.id);assert.equal(bRows.debug.taste.evidenceCount,0);assert.ok(!bRows.debug.rows.some((r:any)=>r.id.startsWith('seed:')));assert.notDeepEqual(bRows.rows.map((r:any)=>r.id),after.rows.map((r:any)=>r.id));
+await writeFile('/tmp/nextscene-discovery-fixture.json',JSON.stringify({...fixture,bEmail,bId:b.user.id,aId:a.user.id}),{mode:0o600});
+await api('/api/auth',{action:'logout'});
+const report={passed:true,onboarding:{languages:a.state.languages,genres:a.state.genres,services:a.state.services,status:a.state.onboarding},initialRows:initial.rows.map((r:any)=>r.name),feedback:{liked:liked.name,ratedHighly:rated.name,swipeLike:swiped.name,notInterested:hidden.name},afterRows:surfaces,increasedScores:strengthened.slice(0,5).map((r:any)=>r.title.name),moodRows:mood.rows.map((r:any)=>r.name),hardFilterMatches:constrained.ranked.map((r:any)=>({name:r.title.name,runtime:r.title.runtime})),accountB:{status:b.state.onboarding,languages:b.state.languages,rows:bRows.rows.map((r:any)=>r.name),evidence:bRows.debug.taste.evidenceCount},privateIsolation:true};
+await writeFile('docs/verification/discovery-demo.json',JSON.stringify(report,null,2));console.log(JSON.stringify(report,null,2));

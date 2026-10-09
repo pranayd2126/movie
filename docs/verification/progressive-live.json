@@ -1,0 +1,92 @@
+{
+  "passed": true,
+  "batches": [
+    {
+      "batch": 0,
+      "rows": [
+        "Top picks for you",
+        "Because you liked Drishyam 3",
+        "Based on your recent interests",
+        "Try something different",
+        "2020s stories for you",
+        "Drama for you",
+        "Top picks on your services"
+      ],
+      "candidates": 60
+    },
+    {
+      "batch": 1,
+      "rows": [
+        "Because you liked Maa Inti Bangaram",
+        "Because you rated Bethlehem Kudumba Unit highly",
+        "Another language you might enjoy",
+        "Recent releases on your services"
+      ],
+      "candidates": 116
+    },
+    {
+      "batch": 2,
+      "rows": [
+        "Hidden gems outside your usual genres",
+        "Thriller for you",
+        "Recent movies matching your taste",
+        "Comedy for you"
+      ],
+      "candidates": 175
+    }
+  ],
+  "totalRows": 15,
+  "uniqueTitles": 87,
+  "bRows": [
+    "Top picks for you",
+    "Because you liked Arcane",
+    "Based on your recent interests",
+    "Recent movies matching your taste",
+    "Hidden gems for you",
+    "Top picks on your services",
+    "Recent releases on your services",
+    "Highly rated, chosen for you"
+  ],
+  "ownerIsolation": true,
+  "forgedStateIgnored": true,
+  "idempotentReplay": true,
+  "filteredBatchRows": [
+    3,
+    3
+  ],
+  "filteredTitles": [
+    "Scary Movie",
+    "Gilmore Girls",
+    "Shrek",
+    "The Middle",
+    "Back to the Future Part II",
+    "Memoir of a Snail",
+    "The Love Hypothesis",
+    "The Sheep Detectives",
+    "Jackass: Best and Last",
+    "Livestream from Hell",
+    "Red, White & Royal Blue",
+    "Lock, Stock and Two Smoking Barrels",
+    "Shrek the Third",
+    "Back to the Future Part III",
+    "Captain Fantastic",
+    "The Hangover",
+    "Wolf Like Me",
+    "Puss in Boots",
+    "The Secret Life of Pets 2",
+    "The Lego Batman Movie",
+    "Kung Fu Panda 3",
+    "2 Broke Girls",
+    "Benidorm",
+    "Mom",
+    "Mozart in the Jungle",
+    "Zombieland",
+    "Transparent",
+    "Spaceballs",
+    "American Fiction",
+    "Jumanji: Welcome to the Jungle",
+    "The Idea of You",
+    "The Hating Game",
+    "Heads of State"
+  ]
+}

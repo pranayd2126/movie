@@ -1,0 +1,37 @@
+{
+  "passed": true,
+  "bOwnLikePersistedAfterLogin": true,
+  "aDoesNotContainBLike": true,
+  "bDoesNotContainALikes": true,
+  "notInterestedUndone": true,
+  "noGenreDislike": true,
+  "onboarding": "skipped",
+  "events": [
+    {
+      "type": "like",
+      "titleId": "tmdb:tv:94605",
+      "at": "2026-10-08T06:54:30.511Z",
+      "surface": "swipe",
+      "row": "deck",
+      "input": "button",
+      "model": "dynamic-v3.1"
+    },
+    {
+      "type": "not_interested",
+      "titleId": "tmdb:movie:693134",
+      "at": "2026-10-08T06:56:38.827Z",
+      "surface": "swipe",
+      "row": "deck",
+      "input": "button",
+      "model": "dynamic-v3.1"
+    },
+    {
+      "type": "swipe_undo",
+      "titleId": "tmdb:movie:693134",
+      "at": "2026-10-08T06:57:33.875Z",
+      "surface": "swipe",
+      "row": "deck",
+      "model": "dynamic-v3.1"
+    }
+  ]
+}

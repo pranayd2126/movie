@@ -1,0 +1,1 @@
+export default function Loading() { return <main id="main" className="page-shell" aria-busy="true" aria-label="Loading discovery"><div className="skeleton skeleton-heading"/><div className="skeleton-grid">{[1,2,3,4,5,6].map(n => <div className="skeleton" key={n}/>)}</div></main>; }

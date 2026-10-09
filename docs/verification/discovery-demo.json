@@ -1,0 +1,88 @@
+{
+  "passed": true,
+  "onboarding": {
+    "languages": [
+      "te",
+      "ml"
+    ],
+    "genres": [
+      "Comedy",
+      "Thriller"
+    ],
+    "services": [
+      "119",
+      "2336"
+    ],
+    "status": "completed"
+  },
+  "initialRows": [
+    "Top picks for you",
+    "Hidden gems for you",
+    "Popular on Amazon Prime Video",
+    "Quick watch picks",
+    "Shows for you",
+    "Recent releases on your services",
+    "Highly rated, chosen for you",
+    "Top picks on your services"
+  ],
+  "feedback": {
+    "liked": "Maa Inti Bangaram",
+    "ratedHighly": "Bethlehem Kudumba Unit",
+    "swipeLike": "Drishyam 3",
+    "notInterested": "The Super Mario Galaxy Movie"
+  },
+  "afterRows": {
+    "discover": [
+      "Top picks for you",
+      "Because you liked Maa Inti Bangaram",
+      "Based on your recent interests",
+      "Try something different",
+      "Drama for you"
+    ],
+    "home": [
+      "Top picks for you",
+      "Because you liked Maa Inti Bangaram",
+      "Based on your recent interests",
+      "Try something different",
+      "Drama for you"
+    ],
+    "for-you": [
+      "Top picks for you",
+      "Because you liked Maa Inti Bangaram",
+      "Based on your recent interests",
+      "Try something different",
+      "Drama for you"
+    ]
+  },
+  "increasedScores": [
+    "Bethlehem Kudumba Unit",
+    "Maa Inti Bangaram",
+    "Drishyam 3",
+    "The Rajasaab",
+    "All We Imagine as Light"
+  ],
+  "moodRows": [
+    "Funny picks for tonight",
+    "Top picks for you",
+    "Based on your recent interests"
+  ],
+  "hardFilterMatches": [],
+  "accountB": {
+    "status": "skipped",
+    "languages": [
+      "en"
+    ],
+    "rows": [
+      "Top picks for you",
+      "Quick watch picks",
+      "Recent releases on your services",
+      "Popular stories to explore",
+      "Top picks on your services",
+      "Highly rated, chosen for you",
+      "Hidden gems for you",
+      "Popular on Netflix"
+    ],
+    "evidence": 0
+  },
+  "privateIsolation": true
+}
