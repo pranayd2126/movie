@@ -4,6 +4,7 @@ import {useCallback,useEffect,useRef,useState,useMemo} from 'react';
 import {defaultFilters,exclusionReason,type Filters} from '@/modules/recommendations/rank';
 import {discoveryContext} from '@/modules/recommendations/feed-context';
 import type {FeedBatch,FeedRow,FeedCursor} from '@/server/discovery-feed';
+import {PosterRail} from './poster-rail';
 import {TitleCard} from './title-card';
 import {useLocal} from './local-provider';
 
@@ -66,5 +67,5 @@ export function ProgressiveDiscover({filters,debug=false,onClear}:{filters:Filte
 function ProgressiveRow({row,feedId,context,filters}:{row:FeedRow;feedId:string;context:string;filters:Filters}){
  const {state}=useLocal();
  const eventContext=useMemo(()=>({feedId,context,batch:row.batch,rowPosition:row.rowPosition,surface:'discover'}),[feedId,context,row.batch,row.rowPosition]);
- return <section className="recommendation-row" aria-label={row.name} data-row-id={row.id} data-batch={row.batch}><div className="section-heading"><div><h2>{row.name}</h2><p>{row.reason}</p></div></div><div className="row-posters">{row.items.filter(r=>!exclusionReason(r.title,state,filters,'discover')).map((r,position)=><TitleCard key={r.title.id} title={r.title} reason={r.reason} row={row.id} rowType={row.theme} anchorId={row.anchorId} position={position} feedContext={eventContext}/>)}</div></section>;
+ return <section className="recommendation-row" aria-label={row.name} data-row-id={row.id} data-batch={row.batch}><div className="section-heading"><div><h2>{row.name}</h2><p>{row.reason}</p></div></div><PosterRail label={row.name}>{row.items.filter(r=>!exclusionReason(r.title,state,filters,'discover')).map((r,position)=><TitleCard key={r.title.id} title={r.title} reason={r.reason} row={row.id} rowType={row.theme} anchorId={row.anchorId} position={position} feedContext={eventContext}/>)}</PosterRail></section>;
 }

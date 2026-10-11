@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef, useState, type ReactNode, type CSSProperties } from 'react';
+import { useEffect, useRef, useState, useId, type ReactNode, type CSSProperties } from 'react';
 import { X, Check, Plus, Film } from 'lucide-react';
 import Image from 'next/image';
 import { useLocal } from './local-provider';
@@ -7,14 +7,16 @@ import { type ProviderId, type Title } from '@/modules/catalog/types';
 
 export function Modal({ title, subtitle, children, onClose, wide = false }: { title: string; subtitle?: string; children: ReactNode; onClose: () => void; wide?: boolean }) {
   const ref = useRef<HTMLDialogElement>(null);
+  const titleId = useId();
   useEffect(() => {
     const dialog = ref.current;
+    const opener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
     dialog?.showModal();
     const prior = document.body.style.overflow; document.body.style.overflow = 'hidden';
-    return () => { document.body.style.overflow = prior; dialog?.close(); };
+    return () => { document.body.style.overflow = prior; dialog?.close(); queueMicrotask(()=>{if(opener?.isConnected)opener.focus({preventScroll:true});}); };
   }, []);
-  return <dialog ref={ref} className={`modal ${wide ? 'wide' : ''}`} onCancel={e => { e.preventDefault(); onClose(); }} onClick={e => { if (e.target === ref.current) { const r = ref.current!.getBoundingClientRect(); if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) onClose(); } }} aria-labelledby="modal-title">
-    <div className="modal-heading"><div><span className="eyebrow">MAKE IT YOURS</span><h2 id="modal-title">{title}</h2>{subtitle && <p>{subtitle}</p>}</div><button className="icon-button" onClick={onClose} aria-label="Close dialog"><X size={22}/></button></div>{children}
+  return <dialog ref={ref} className={`modal ${wide ? 'wide' : ''}`} onCancel={e => { e.preventDefault(); onClose(); }} onClick={e => { if (e.target === ref.current) { const r = ref.current!.getBoundingClientRect(); if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) onClose(); } }} aria-labelledby={titleId}>
+    <div className="modal-heading"><div><span className="eyebrow">MAKE IT YOURS</span><h2 id={titleId}>{title}</h2>{subtitle && <p>{subtitle}</p>}</div><button className="icon-button" onClick={onClose} aria-label="Close dialog"><X size={22}/></button></div>{children}
   </dialog>;
 }
 export function ServiceLogo({ id, className = '' }: { id: ProviderId; className?: string }) {

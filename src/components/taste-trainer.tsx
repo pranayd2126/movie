@@ -103,7 +103,7 @@ export function TasteTrainer() {
   const refresh = () => { setRequest(r => ({ page: r.page >= 3 || !hasMore ? 1 : r.page + 1, generation: r.generation + 1 })); };
   const paused = !!syncError;
   return <main id="main" className="page-shell taste-page">
-    <section className="taste-intro"><span className="eyebrow"><Sparkles size={13}/> A FEW CHOICES. BETTER PICKS.</span><h1>Find your kind of cinema.</h1><p>Like what catches your eye. Pass on what doesn’t.<br/>Every choice makes Home and For You more yours.</p></section>
+    <section className="taste-intro"><span className="eyebrow"><Sparkles size={13}/> A FEW CHOICES. BETTER PICKS.</span><h1>Less searching. More feeling.</h1><p>Like what catches your eye. Pass on what doesn’t.<br/>Every choice makes Home and For You more yours.</p><div className="taste-guide"><div><span>01</span><div><strong>Go with your instinct</strong><p>Swipe right for Like. Left for Not Interested.</p></div></div><div><span>02</span><div><strong>Changed your mind?</strong><p>Undo brings your last card right back.</p></div></div><div><span>03</span><div><strong>Watch your world open up</strong><p>Your choices shape your next recommendations.</p></div></div></div><Link href="/for-you" className="text-button">Explore your personal edit <ArrowRight size={16}/></Link></section>
     <div className="taste-workspace">
       <div ref={deck} className="taste-deck" tabIndex={0} role="group" aria-label="Taste cards. Right arrow to like, left arrow for not interested." onKeyDown={event => {
         if ((event.target !== event.currentTarget && !(event.target instanceof Element && event.target.closest('[data-active]'))) || event.repeat || event.altKey || event.metaKey || event.ctrlKey) return;

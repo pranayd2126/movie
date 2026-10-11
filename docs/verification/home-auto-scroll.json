@@ -1,0 +1,17 @@
+{
+  "feature": "Automatic personalized Home rows",
+  "initialRows": 7,
+  "firstAppendRows": 11,
+  "finalRows": 24,
+  "prefixStable": true,
+  "heroStable": true,
+  "returnFromDiscoverStable": true,
+  "normalMoreButtonPresent": false,
+  "moodResetRows": 0,
+  "filteredInitialRows": 6,
+  "typecheck": "passed",
+  "productionBuild": "passed",
+  "backendFilesChanged": false,
+  "bounds": "24 rows, 6 batches/pages, 360 candidates; stop earlier when exhausted",
+  "scope": "Home Our picks rows; explicit search and non-personalized sorts retain existing grid pagination"
+}

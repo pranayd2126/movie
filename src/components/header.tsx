@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Bookmark, Compass, Search, Sparkles, Users, Settings2, Globe2, Clapperboard, Layers } from 'lucide-react';
+import { Home, Bookmark, Compass, Search, Sparkles, Users, Settings2, Globe2, Clapperboard, Layers, ArrowUpRight, ShieldCheck } from 'lucide-react';
 import { useState } from 'react';
 import { Modal, ServicePicker } from './primitives';
 import { useLocal } from './local-provider';
@@ -23,13 +23,15 @@ export function Header() {
   const { state, storageError, user } = useLocal();
   return <>
     <a href="#main" className="skip-link">Skip to content</a>
-    <header className="site-header"><div className="header-inner"><Link href="/" className="brand" aria-label="NextScene home"><span className="brand-mark"><Clapperboard size={23}/></span>nextscene<span className="brand-dot">.</span></Link>
-      <nav className="desktop-nav" aria-label="Main navigation">{nav.map(n => <Link className={pathname === n.href ? 'active' : ''} href={n.href} key={n.href}>{n.label}{n.href === '/for-you' && <Sparkles size={12}/>}</Link>)}</nav>
-      <div className="header-tools"><Link className="header-search" href="/discover" aria-label="Search movies and series"><Search size={18}/><span>Find your next watch</span><kbd>/</kbd></Link><button className="my-services" aria-label={`My services (${state.services.length} selected)`} onClick={() => setServices(true)}><Settings2 size={16}/><span>My services</span>{state.services.length > 0 && <span className="count">{state.services.length}</span>}</button><Link href="/account" className="profile-button" aria-label={user ? "Your account" : "Sign in or create account"}><span>{user ? user.name.slice(0,1).toUpperCase() : "Sign in"}</span></Link></div>
+    <header className="site-header"><div className="header-inner"><Link href="/" className="brand" aria-label="NextScene home"><span className="brand-mark"><Clapperboard size={22}/></span>nextscene<span className="brand-dot">.</span></Link>
+      <span className="rail-label">YOUR NEXT OBSESSION</span>
+      <nav className="desktop-nav" aria-label="Main navigation">{nav.map(n => <Link aria-current={pathname === n.href ? 'page' : undefined} className={pathname === n.href ? 'active' : ''} href={n.href} key={n.href}><n.icon size={19}/><span>{n.label}</span>{pathname === n.href && <span className="nav-indicator"/>}</Link>)}</nav>
+      <Link className="rail-taste" href="/taste"><span className="rail-orbit"><Sparkles size={27}/></span><strong>Good taste.<br/>Better discoveries.</strong><span>Train your picks <ArrowUpRight size={15}/></span></Link>
+      <div className="rail-bottom"><Link href="/settings"><ShieldCheck size={17}/> Privacy & preferences</Link><span><Globe2 size={14}/> India · IN</span></div>
     </div></header>
-    <div className="preview-strip"><div><span className="preview-pill">PREVIEW</span><span>Real stories from TMDB. India watch options via JustWatch.</span></div><span className="region"><Globe2 size={13}/> India <span>IN</span></span></div>
+    <div className="app-topbar"><span className="topbar-context">{nav.find(n=>n.href===pathname)?.label ?? 'Your next scene'} <span>/ A world worth watching</span></span><div className="header-tools"><Link className="header-search" href="/discover?focus=search" onClick={event=>{if(pathname==='/discover'){const input=document.getElementById('catalog-search');if(input){event.preventDefault();input.focus();input.scrollIntoView({block:'center'});}}}} aria-label="Search movies and series"><Search size={18}/><span>Find a story</span><kbd>/</kbd></Link><button className="my-services" aria-label={`My services (${state.services.length} selected)`} onClick={() => setServices(true)}><Settings2 size={17}/><span>Services</span>{state.services.length > 0 && <span className="count">{state.services.length}</span>}</button><Link href="/account" className="profile-button" aria-label={user ? "Your account" : "Sign in or create account"}><span>{user ? user.name.slice(0,1).toUpperCase() : "Sign in"}</span></Link></div></div>
     {storageError && <p className="storage-warning" role="alert">Browser storage is unavailable. Your choices will last for this visit only.</p>}
-    <nav className="mobile-nav" aria-label="Mobile navigation">{nav.map(n => <Link className={pathname === n.href ? 'active' : ''} href={n.href} key={n.href}><n.icon size={21}/><span>{n.label}</span></Link>)}</nav>
+    <nav className="mobile-nav" aria-label="Mobile navigation">{nav.map(n => <Link aria-current={pathname === n.href ? 'page' : undefined} className={pathname === n.href ? 'active' : ''} href={n.href} key={n.href}><n.icon size={21}/><span>{n.label}</span></Link>)}</nav>
     {services && <ServicesModal onClose={() => setServices(false)}/>}
   </>;
 }

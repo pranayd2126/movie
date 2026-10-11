@@ -4,6 +4,7 @@ import { LocalProvider } from '@/components/local-provider';
 import { SignupOnboarding } from '@/components/onboarding';
 import { Header } from '@/components/header';
 import './globals.css';
+import './studio.css';
 
 export const metadata: Metadata = {
   title: { default: 'NextScene — Find your next great watch', template: '%s · NextScene' },
