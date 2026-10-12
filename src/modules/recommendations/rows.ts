@@ -72,14 +72,14 @@ export function composeRowPlan(titles:Title[],state:LocalState,evidence:Title[],
   add('new-services','Recent releases on your services','freshness','Recent releases currently included; this does not claim when a service added them.',included.filter(r=>r.title.year>=new Date().getFullYear()-2).sort((a,b)=>(b.score+.14*b.components.freshness)-(a.score+.14*a.components.freshness)),1);
   for(const id of state.services.slice(0,progressive?6:3)){
    const offer=included.flatMap(r=>r.title.offers).find(o=>o.provider===id&&o.type==='subscription'&&o.region==='IN');if(!offer?.name)continue;
-   add(`provider:${id}`,`Popular on ${offer.name}`,'provider','Popular TMDB titles with an included India offer; not service viewing statistics.',included.filter(r=>r.title.offers.some(o=>o.provider===id&&o.type==='subscription'&&o.region==='IN')).sort((a,b)=>(b.score+.1*b.components.popularity)-(a.score+.1*a.components.popularity)),1);
+   add(`provider:${id}`,`Popular on ${offer.name}`,'provider','Popular titles with an included India offer; not service viewing statistics.',included.filter(r=>r.title.offers.some(o=>o.provider===id&&o.type==='subscription'&&o.region==='IN')).sort((a,b)=>(b.score+.1*b.components.popularity)-(a.score+.1*a.components.popularity)),1);
   }
  }
  if(filters.mood!=='All moods')add(`mood:${filters.mood}`,`${moodLabel(filters.mood)} picks for tonight`,'intent','Inferred from genres and keywords, shaped by your current filters and taste.',base,1,CONFIG.rows.moodBonus);
  add('quick','Quick watch picks','runtime','Films or reported TV episodes under 90 minutes; unknown runtimes excluded.',base.filter(r=>r.title.runtime>0&&r.title.runtime<90),1,filters.maxRuntime?.1:0);
  add('quality','Highly rated, chosen for you','quality','Confidence-adjusted TMDB audience scores; not professional critic reviews.',base.filter(r=>r.components.quality>=.75&&r.title.votes>=150),1);
- add('trending','Trending stories to explore','trending','TMDB weekly global trends, filtered for your current India watch options.',base.filter(r=>r.title.provenance?.some(p=>p.startsWith('trending:'))),0);
- add('popular','Popular stories to explore','popular','TMDB popularity with your current India availability filters.',[...base].sort((a,b)=>b.title.popularity-a.title.popularity),0);
+ add('trending','Trending stories to explore','trending','Weekly global trends, filtered for your current India watch options.',base.filter(r=>r.title.provenance?.some(p=>p.startsWith('trending:'))),0);
+ add('popular','Popular stories to explore','popular','Popular titles with your current India availability filters.',[...base].sort((a,b)=>b.title.popularity-a.title.popularity),0);
  for(const kind of ['movie','series'] as const)add(`kind:${kind}`,kind==='movie'?'Movies for you':'Shows for you',`kind:${kind}`,'Your personalized mix, within this format.',base.filter(r=>r.title.kind===kind),0);
  if(progressive){
   const watched=new Set(state.watched.map(w=>w.titleId));
