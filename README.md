@@ -69,3 +69,9 @@ For production-mode local testing: `npm run build && npm start` (also localhost:
 GitHub and deployment remain deferred. The app is a local preview; do not deploy until account authorization, abuse controls and commercial/data terms are reviewed for the actual launch scope.
 
 Taste supports right-swipe Like, left-swipe Not Interested, animated button/keyboard choices, Undo, and card-to-detail navigation. See [the focused Taste polish report](docs/TASTE_FEATURE_REPORT.md) for implementation details, evidence and verification limits. Run only its focused checks with `npx tsx --conditions=react-server --test tests/swipe.test.ts`.
+
+### Vercel request origins
+
+Set `APP_ORIGIN` to your canonical site origin (for example, `https://movie-qx5f.vercel.app`). Do not use localhost in the deployed environment. Keep Vercel's automatically exposed system environment variables enabled: the server accepts the exact `VERCEL_URL`, `VERCEL_BRANCH_URL`, and `VERCEL_PROJECT_PRODUCTION_URL` when running on Vercel. It does not trust arbitrary Host headers or all vercel.app domains. Redeploy after changing environment variables or the origin-check code.
+
+If a page reports “This request must come from the application,” the request was rejected before the movie API was called. Verify the deployment includes the updated origin guard and the matching environment configuration.
